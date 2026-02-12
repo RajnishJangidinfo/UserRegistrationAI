@@ -10,6 +10,16 @@ export interface LoginPayload {
     password: string;
 }
 
+export interface ForgotPasswordPayload {
+    email: string;
+}
+
+export interface ResetPasswordPayload {
+    email: string;
+    otp: string;
+    newPassword: string;
+}
+
 export interface LoginResponse {
     user: User;
     token: string;
@@ -100,6 +110,70 @@ export async function loginUser(payload: LoginPayload): Promise<ApiResponse> {
             success: true,
             message: data.message || "Login successful",
             data: data.data
+        };
+
+    } catch (error: any) {
+        console.error("API Error:", error);
+        return {
+            success: false,
+            message: error.message || "An unexpected error occurred."
+        };
+    }
+}
+
+export async function forgotPassword(payload: ForgotPasswordPayload): Promise<ApiResponse> {
+    try {
+        const response = await fetch(`${BASE_URL}/users/forgot-password`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "accept": "application/json"
+            },
+            body: JSON.stringify(payload),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || "Failed to initiate password reset.");
+        }
+
+        return {
+            success: true,
+            message: data.message || "OTP sent successfully",
+            data: data
+        };
+
+    } catch (error: any) {
+        console.error("API Error:", error);
+        return {
+            success: false,
+            message: error.message || "An unexpected error occurred."
+        };
+    }
+}
+
+export async function resetPassword(payload: ResetPasswordPayload): Promise<ApiResponse> {
+    try {
+        const response = await fetch(`${BASE_URL}/users/reset-password`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "accept": "application/json"
+            },
+            body: JSON.stringify(payload),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || "Failed to reset password.");
+        }
+
+        return {
+            success: true,
+            message: data.message || "Password reset successful",
+            data: data
         };
 
     } catch (error: any) {
