@@ -160,5 +160,66 @@ namespace UserManagementApi.Controllers
                 return StatusCode(500, new { success = false, message = "An error occurred while fetching users" });
             }
         }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordDto dto)
+        {
+            try
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
+                if (user == null)
+                {
+                    // For security, don't reveal that the user doesn't exist
+                    return Ok(new { success = true, message = "If your email is registered, you will receive an OTP shortly." });
+                }
+
+                // Generate 6-digit OTP
+                var otp = new Random().Next(100000, 999999).ToString();
+                user.ResetOtp = otp;
+                user.ResetOtpExpiry = DateTime.UtcNow.AddMinutes(10);
+
+                await _context.SaveChangesAsync();
+
+                // LOG TO CONSOLE (Simulation of Email Sending)
+                _logger.LogInformation("==================================================");
+                _logger.LogInformation($"FORGOT PASSWORD OTP for {user.Email}: {otp}");
+                _logger.LogInformation("==================================================");
+
+                return Ok(new { success = true, message = "OTP has been sent to your email." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in ForgotPassword");
+                return StatusCode(500, new { success = false, message = "An error occurred." });
+            }
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto dto)
+        {
+            try
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
+                
+                if (user == null || user.ResetOtp != dto.Otp || user.ResetOtpExpiry < DateTime.UtcNow)
+                {
+                    return BadRequest(new { success = false, message = "Invalid or expired OTP." });
+                }
+
+                // Reset password
+                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+                user.ResetOtp = null;
+                user.ResetOtpExpiry = null;
+
+                await _context.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Password has been reset successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in ResetPassword");
+                return StatusCode(500, new { success = false, message = "An error occurred." });
+            }
+        }
     }
 }

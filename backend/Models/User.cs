@@ -8,5 +8,7 @@ namespace UserManagementApi.Models
         public required string PasswordHash { get; set; }
         public string Role { get; set; } = "USER";
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public string? ResetOtp { get; set; }
+        public DateTime? ResetOtpExpiry { get; set; }
     }
 }
