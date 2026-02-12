@@ -26,6 +26,8 @@ namespace UserManagementApi.DTOs
         public string? Language { get; set; }
         public string? ThumbnailUrl { get; set; }
         public string? InfoLink { get; set; }
+        public int StockQuantity { get; set; }
+        public decimal UnitPrice { get; set; }
         
         public List<string> AuthorNames { get; set; } = new();
         public List<string> CategoryNames { get; set; } = new();
@@ -44,6 +46,8 @@ namespace UserManagementApi.DTOs
         public string? Language { get; set; }
         public string? ThumbnailUrl { get; set; }
         public string? InfoLink { get; set; }
+        public int StockQuantity { get; set; }
+        public decimal UnitPrice { get; set; }
         
         public List<string> AuthorNames { get; set; } = new();
         public List<string> CategoryNames { get; set; } = new();

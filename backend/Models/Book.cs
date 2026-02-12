@@ -14,6 +14,8 @@ namespace UserManagementApi.Models
         public string? Language { get; set; }
         public string? ThumbnailUrl { get; set; }
         public string? InfoLink { get; set; }
+        public int StockQuantity { get; set; }
+        public decimal UnitPrice { get; set; }
         
         public ICollection<Author> Authors { get; set; } = new List<Author>();
         public ICollection<Category> Categories { get; set; } = new List<Category>();

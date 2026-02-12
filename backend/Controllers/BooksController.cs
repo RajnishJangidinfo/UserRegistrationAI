@@ -39,6 +39,8 @@ namespace UserManagementApi.Controllers
                     Language = b.Language,
                     ThumbnailUrl = b.ThumbnailUrl,
                     InfoLink = b.InfoLink,
+                    StockQuantity = b.StockQuantity,
+                    UnitPrice = b.UnitPrice,
                     AuthorNames = b.Authors.Select(a => a.Name).ToList(),
                     CategoryNames = b.Categories.Select(c => c.Name).ToList()
                 })
@@ -71,6 +73,8 @@ namespace UserManagementApi.Controllers
                 Language = b.Language,
                 ThumbnailUrl = b.ThumbnailUrl,
                 InfoLink = b.InfoLink,
+                StockQuantity = b.StockQuantity,
+                UnitPrice = b.UnitPrice,
                 AuthorNames = b.Authors.Select(a => a.Name).ToList(),
                 CategoryNames = b.Categories.Select(c => c.Name).ToList()
             };
@@ -91,7 +95,9 @@ namespace UserManagementApi.Controllers
                 PrintType = dto.PrintType,
                 Language = dto.Language,
                 ThumbnailUrl = dto.ThumbnailUrl,
-                InfoLink = dto.InfoLink
+                InfoLink = dto.InfoLink,
+                StockQuantity = dto.StockQuantity,
+                UnitPrice = dto.UnitPrice
             };
 
             foreach (var authorName in dto.AuthorNames)
@@ -133,6 +139,8 @@ namespace UserManagementApi.Controllers
                 Language = book.Language,
                 ThumbnailUrl = book.ThumbnailUrl,
                 InfoLink = book.InfoLink,
+                StockQuantity = book.StockQuantity,
+                UnitPrice = book.UnitPrice,
                 AuthorNames = book.Authors.Select(a => a.Name).ToList(),
                 CategoryNames = book.Categories.Select(c => c.Name).ToList()
             });
@@ -158,6 +166,8 @@ namespace UserManagementApi.Controllers
             book.Language = dto.Language;
             book.ThumbnailUrl = dto.ThumbnailUrl;
             book.InfoLink = dto.InfoLink;
+            book.StockQuantity = dto.StockQuantity;
+            book.UnitPrice = dto.UnitPrice;
 
             // Simple clear and rebuild relation for demo (inefficient but works for small sets)
             book.Authors.Clear();

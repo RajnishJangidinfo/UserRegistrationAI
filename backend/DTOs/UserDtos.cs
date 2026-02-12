@@ -16,4 +16,15 @@ namespace UserManagementApi.DTOs
         public required string Role { get; set; }
         public DateTime CreatedAt { get; set; }
     }
+    public class LoginDto
+    {
+        public required string Email { get; set; }
+        public required string Password { get; set; }
+    }
+
+    public class LoginResponseDto
+    {
+        public required UserResponseDto User { get; set; }
+        public required string Token { get; set; }
+    }
 }

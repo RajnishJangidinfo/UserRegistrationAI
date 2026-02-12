@@ -14,6 +14,8 @@ namespace UserManagementApi.Data
         public DbSet<Book> Books { get; set; }
         public DbSet<Author> Authors { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -35,6 +37,7 @@ namespace UserManagementApi.Data
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Title).IsRequired().HasMaxLength(255);
                 entity.Property(e => e.GoogleBookId).HasMaxLength(50);
+                entity.Property(e => e.UnitPrice).HasPrecision(18, 2);
                 
                 entity.HasMany(b => b.Authors)
                       .WithMany(a => a.Books);
@@ -53,6 +56,30 @@ namespace UserManagementApi.Data
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(255);
+            });
+
+            modelBuilder.Entity<Order>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.CustomerName).IsRequired().HasMaxLength(255);
+                entity.Property(e => e.CustomerEmail).IsRequired().HasMaxLength(255);
+                entity.Property(e => e.CustomerPhone).IsRequired().HasMaxLength(20);
+                entity.Property(e => e.TotalPrice).HasPrecision(18, 2);
+                
+                entity.HasMany(o => o.OrderItems)
+                      .WithOne(oi => oi.Order)
+                      .HasForeignKey(oi => oi.OrderId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<OrderItem>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.UnitPrice).HasPrecision(18, 2);
+                
+                entity.HasOne(oi => oi.Book)
+                      .WithMany()
+                      .HasForeignKey(oi => oi.BookId);
             });
         }
     }
