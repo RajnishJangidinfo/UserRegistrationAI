@@ -3,14 +3,22 @@
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Users as UsersIcon, Mail, Calendar, Shield, AlertCircle } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { getUsers, User } from "@/lib/api"
 
 export default function UsersPage() {
+    const router = useRouter()
     const [users, setUsers] = useState<User[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState("")
 
     useEffect(() => {
+        const token = localStorage.getItem("token")
+        if (!token) {
+            router.push("/login")
+            return
+        }
+
         async function fetchUsers() {
             setLoading(true)
             const response = await getUsers()
@@ -22,7 +30,7 @@ export default function UsersPage() {
             setLoading(false)
         }
         fetchUsers()
-    }, [])
+    }, [router])
 
     return (
         <div className="p-8 space-y-8">

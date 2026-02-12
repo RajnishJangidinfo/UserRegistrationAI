@@ -4,9 +4,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Activity, Users, CreditCard, DollarSign } from "lucide-react"
 import dynamic from "next/dynamic"
 
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
+
 const OverviewChart = dynamic(() => import("@/components/dashboard/overview-chart").then(mod => mod.OverviewChart), { ssr: false })
 
 export default function DashboardPage() {
+    const router = useRouter()
+
+    useEffect(() => {
+        const token = localStorage.getItem("token")
+        if (!token) {
+            router.push("/login")
+        }
+    }, [router])
     const stats = [
         {
             title: "Total Revenue",

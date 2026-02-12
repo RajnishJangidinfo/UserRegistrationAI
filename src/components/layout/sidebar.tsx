@@ -3,9 +3,10 @@
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { LayoutDashboard, UserPlus, LogOut, Menu, X, Users, LogIn, User } from "lucide-react"
+import { LayoutDashboard, UserPlus, LogOut, Menu, X, Users, LogIn, User, BookOpen, ShoppingBag, ShoppingCart } from "lucide-react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
+import { useCart } from "@/context/CartContext"
 
 const sidebarItems = [
     {
@@ -17,6 +18,21 @@ const sidebarItems = [
         title: "Profile",
         href: "/profile",
         icon: User,
+    },
+    {
+        title: "Books",
+        href: "/books",
+        icon: BookOpen,
+    },
+    {
+        title: "Orders",
+        href: "/orders",
+        icon: ShoppingBag,
+    },
+    {
+        title: "Cart",
+        href: "/cart",
+        icon: ShoppingCart,
     },
     {
         title: "Users",
@@ -39,6 +55,7 @@ export function Sidebar() {
     const pathname = usePathname()
     const router = useRouter()
     const [isOpen, setIsOpen] = useState(false)
+    const { totalItems } = useCart()
 
     const handleLogout = () => {
         localStorage.removeItem("token")
@@ -88,6 +105,11 @@ export function Sidebar() {
                                 >
                                     <Icon className={cn("h-4 w-4", isActive ? "text-purple-400" : "text-zinc-500")} />
                                     {item.title}
+                                    {item.title === "Cart" && totalItems > 0 && (
+                                        <span className="ml-auto bg-purple-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold animate-in zoom-in duration-300">
+                                            {totalItems}
+                                        </span>
+                                    )}
                                 </Link>
                             )
                         })}

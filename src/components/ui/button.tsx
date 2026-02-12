@@ -52,7 +52,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 */
 // Actually, I'll use simple manual class composition to avoid dependency hell for this small task.
 
-const Button = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'default' | 'premium' | 'outline' | 'ghost', size?: 'default' | 'sm' | 'lg' | 'icon', isLoading?: boolean }>(
+const Button = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'default' | 'premium' | 'outline' | 'ghost' | 'glass', size?: 'default' | 'sm' | 'lg' | 'icon', isLoading?: boolean }>(
     ({ className, variant = 'default', size = 'default', isLoading, children, ...props }, ref) => {
 
         const baseStyles = "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 active:scale-95";
@@ -61,7 +61,8 @@ const Button = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HT
             default: "bg-zinc-900 text-zinc-50 hover:bg-zinc-900/90 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-50/90 shadow-sm",
             premium: "bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-0.5 border-0",
             outline: "border border-zinc-200 bg-transparent hover:bg-zinc-100 text-zinc-900 dark:border-zinc-800 dark:hover:bg-zinc-800 dark:text-zinc-50",
-            ghost: "hover:bg-zinc-100 text-zinc-900 dark:hover:bg-zinc-800 dark:text-zinc-50"
+            ghost: "hover:bg-zinc-100 text-zinc-900 dark:hover:bg-zinc-800 dark:text-zinc-50",
+            glass: "bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 transition-all shadow-xl"
         };
 
         const sizes = {

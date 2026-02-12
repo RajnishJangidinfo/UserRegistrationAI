@@ -39,83 +39,87 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-900 via-purple-900 to-black p-4">
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-[10%] left-[20%] w-72 h-72 bg-blue-500/20 rounded-full blur-[120px]" />
-                <div className="absolute bottom-[10%] right-[20%] w-96 h-96 bg-purple-500/20 rounded-full blur-[150px]" />
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-zinc-900 to-black p-4 relative overflow-hidden">
+            {/* Background Decor */}
+            <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+                <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-purple-500/10 blur-[120px]" />
+                <div className="absolute top-[40%] -right-[10%] w-[40%] h-[40%] rounded-full bg-indigo-500/10 blur-[100px]" />
             </div>
 
-            <Card className="max-w-md w-full glass border-0 text-white relative z-10 animate-in fade-in zoom-in duration-500">
-                <CardHeader className="text-center">
+            <div className="glass max-w-md w-full p-8 rounded-2xl relative z-10 shadow-2xl ring-1 ring-white/10 animate-in fade-in zoom-in duration-500">
+                <div className="text-center mb-8">
                     <div className="mx-auto w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center mb-4 border border-white/20">
                         <LogIn className="w-6 h-6 text-indigo-400" />
                     </div>
-                    <CardTitle className="text-2xl font-bold tracking-tight">Welcome Back</CardTitle>
-                    <CardDescription className="text-zinc-400">
+                    <h1 className="text-4xl font-extrabold tracking-tight text-white mb-2 bg-clip-text text-transparent bg-gradient-to-r from-indigo-200 to-purple-200">
+                        Welcome Back
+                    </h1>
+                    <p className="text-sm text-gray-400">
                         Enter your credentials to access your account
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        {error && (
-                            <div className="bg-red-500/10 border border-red-500/20 text-red-100 p-3 rounded-lg flex items-center gap-2 text-sm animate-shake">
-                                <AlertCircle className="h-4 w-4" />
-                                {error}
-                            </div>
-                        )}
+                    </p>
+                </div>
 
-                        <div className="space-y-2">
-                            <Label htmlFor="email">Email</Label>
-                            <div className="relative">
-                                <Mail className="absolute left-3 top-3 h-4 w-4 text-zinc-500" />
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    placeholder="name@example.com"
-                                    className="pl-10 glass border-white/10 focus:border-indigo-500/50 bg-white/5"
-                                    value={formData.email}
-                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                    required
-                                />
-                            </div>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    {error && (
+                        <div className="bg-red-500/10 border border-red-500/20 text-red-200 px-4 py-3 rounded-lg text-sm flex items-center animate-shake">
+                            <AlertCircle className="h-4 w-4 mr-2" />
+                            {error}
                         </div>
-
-                        <div className="space-y-2">
-                            <Label htmlFor="password">Password</Label>
-                            <div className="relative">
-                                <Lock className="absolute left-3 top-3 h-4 w-4 text-zinc-500" />
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    placeholder="••••••••"
-                                    className="pl-10 glass border-white/10 focus:border-indigo-500/50 bg-white/5"
-                                    value={formData.password}
-                                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                    required
-                                />
-                            </div>
-                        </div>
-
-                        <Button type="submit" variant="premium" className="w-full h-11" disabled={loading}>
-                            {loading ? (
-                                <>
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Signing in...
-                                </>
-                            ) : (
-                                "Sign In"
-                            )}
-                        </Button>
-                    </form>
-
-                    <div className="mt-6 text-center text-sm text-zinc-400">
-                        Don't have an account?{" "}
-                        <Link href="/register" className="text-white font-medium hover:underline inline-flex items-center">
-                            Sign up <ArrowRight className="ml-1 h-3 w-3" />
-                        </Link>
+                    )}
+                    <div className="space-y-2">
+                        <Label htmlFor="email" className="text-gray-300">Email Address</Label>
+                        <Input
+                            id="email"
+                            name="email"
+                            type="email"
+                            placeholder="john@example.com"
+                            value={formData.email}
+                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                            icon={<Mail className="h-4 w-4" />}
+                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 focus:border-purple-500 focus:ring-purple-500/20"
+                            required
+                        />
                     </div>
-                </CardContent>
-            </Card>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="password" className="text-gray-300">Password</Label>
+                        <Input
+                            id="password"
+                            name="password"
+                            type="password"
+                            placeholder="••••••••"
+                            value={formData.password}
+                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                            icon={<Lock className="h-4 w-4" />}
+                            className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 focus:border-purple-500 focus:ring-purple-500/20"
+                            required
+                        />
+                    </div>
+
+                    <Button
+                        type="submit"
+                        variant="premium"
+                        className="w-full h-12 text-lg"
+                        disabled={loading}
+                    >
+                        {loading ? (
+                            <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Signing in...
+                            </>
+                        ) : (
+                            "Sign In"
+                        )}
+                    </Button>
+                </form>
+
+                <div className="mt-6 text-center text-sm">
+                    <span className="text-gray-400">Don't have an account? </span>
+                    <Link href="/register" className="text-purple-400 hover:text-purple-300 font-medium transition-colors inline-flex items-center">
+                        Sign up <ArrowRight className="ml-1 h-3 w-3" />
+                    </Link>
+                </div>
+            </div>
         </div>
     )
 }

@@ -137,6 +137,7 @@ namespace UserManagementApi.Controllers
         }
 
         [HttpGet]
+        [Microsoft.AspNetCore.Authorization.Authorize]
         public async Task<ActionResult<IEnumerable<UserResponseDto>>> GetUsers()
         {
             try
