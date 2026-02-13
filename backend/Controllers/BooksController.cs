@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using UserManagementApi.Data;
 using UserManagementApi.DTOs;
 using UserManagementApi.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace UserManagementApi.Controllers
 {
@@ -12,14 +13,66 @@ namespace UserManagementApi.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger<BooksController> _logger;
+        private readonly IWebHostEnvironment _env;
 
-        public BooksController(ApplicationDbContext context, ILogger<BooksController> logger)
+        public BooksController(ApplicationDbContext context, ILogger<BooksController> logger, IWebHostEnvironment env)
         {
             _context = context;
             _logger = logger;
+            _env = env;
         }
 
+        // Image upload endpoint
+        // Admin or SuperAdmin only - upload images
+        [HttpPost("upload-image")]
+        [Authorize(Policy = "AdminOrAbove")]
+        public async Task<ActionResult<string>> UploadImage(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("No file uploaded");
+
+            // Validate file type
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+            var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+            
+            if (!allowedExtensions.Contains(extension))
+                return BadRequest("Invalid file type. Only image files are allowed.");
+
+            // Validate file size (max 5MB)
+            if (file.Length > 5 * 1024 * 1024)
+                return BadRequest("File size exceeds 5MB limit.");
+
+            try
+            {
+                // Create uploads directory if it doesn't exist
+                var uploadsFolder = Path.Combine(_env.ContentRootPath, "uploads", "books");
+                if (!Directory.Exists(uploadsFolder))
+                    Directory.CreateDirectory(uploadsFolder);
+
+                // Generate unique filename
+                var uniqueFileName = $"{Guid.NewGuid()}{extension}";
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                // Save file
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(fileStream);
+                }
+
+                // Return the relative path to store in database
+                var relativePath = $"/uploads/books/{uniqueFileName}";
+                return Ok(new { path = relativePath });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error uploading file");
+                return StatusCode(500, "Error uploading file");
+            }
+        }
+
+        // Public - anyone can view books
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<BookDto>>> GetBooks()
         {
             var books = await _context.Books
@@ -49,7 +102,9 @@ namespace UserManagementApi.Controllers
             return Ok(books);
         }
 
+        // Public - anyone can view book details
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<BookDto>> GetBook(int id)
         {
             var b = await _context.Books
@@ -80,7 +135,9 @@ namespace UserManagementApi.Controllers
             };
         }
 
+        // Admin or SuperAdmin only - create books
         [HttpPost]
+        [Authorize(Policy = "AdminOrAbove")]
         public async Task<ActionResult<BookDto>> CreateBook(CreateBookDto dto)
         {
             var book = new Book
@@ -146,7 +203,9 @@ namespace UserManagementApi.Controllers
             });
         }
 
+        // Admin or SuperAdmin only - update books
         [HttpPut("{id}")]
+        [Authorize(Policy = "AdminOrAbove")]
         public async Task<IActionResult> UpdateBook(int id, CreateBookDto dto)
         {
             var book = await _context.Books
@@ -198,7 +257,9 @@ namespace UserManagementApi.Controllers
             return NoContent();
         }
 
+        // Admin or SuperAdmin only - delete books
         [HttpDelete("{id}")]
+        [Authorize(Policy = "AdminOrAbove")]
         public async Task<IActionResult> DeleteBook(int id)
         {
             var book = await _context.Books.FindAsync(id);

@@ -8,6 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using BCrypt.Net;
+using Microsoft.AspNetCore.Authorization;
 
 namespace UserManagementApi.Controllers
 {
@@ -112,7 +113,7 @@ namespace UserManagementApi.Controllers
                     Username = registerDto.Username,
                     Email = registerDto.Email,
                     PasswordHash = passwordHash,
-                    Role = registerDto.Role ?? "USER"
+                    Role = registerDto.Role ?? "Customer" // Default to Customer role
                 };
 
                 _context.Users.Add(user);
@@ -136,7 +137,9 @@ namespace UserManagementApi.Controllers
             }
         }
 
+        // Super Admin only - view all users
         [HttpGet]
+        [Authorize(Policy = "SuperAdminOnly")]
         public async Task<ActionResult<IEnumerable<UserResponseDto>>> GetUsers()
         {
             try

@@ -3,6 +3,9 @@ using UserManagementApi.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
+using UserManagementApi.Authorization;
+using UserManagementApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,7 +59,31 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddAuthorization();
+// Register SuperAdmin Authorization Handler (global bypass for SuperAdmin role)
+builder.Services.AddSingleton<IAuthorizationHandler, SuperAdminAuthorizationHandler>();
+
+// Register Database Seeder
+builder.Services.AddScoped<DatabaseSeeder>();
+
+// Add Authorization Policies for RBAC
+builder.Services.AddAuthorization(options =>
+{
+    // Super Admin only - full system access
+    options.AddPolicy("SuperAdminOnly", policy =>
+        policy.RequireRole("SuperAdmin"));
+
+    // Admin or Super Admin - content management
+    options.AddPolicy("AdminOrAbove", policy =>
+        policy.RequireRole("Admin", "SuperAdmin"));
+
+    // Customer or above - shopping and orders
+    options.AddPolicy("CustomerOrAbove", policy =>
+        policy.RequireRole("Customer", "Admin", "SuperAdmin"));
+
+    // Any authenticated user
+    options.AddPolicy("AuthenticatedUser", policy =>
+        policy.RequireAuthenticatedUser());
+});
 
 var app = builder.Build();
 
@@ -69,16 +96,28 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("AllowNextJs");
 
+// Serve static files from uploads directory
+app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
+        Path.Combine(builder.Environment.ContentRootPath, "uploads")),
+    RequestPath = "/uploads"
+});
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
-// Initialize database
-// using (var scope = app.Services.CreateScope())
-// {
-//     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-//     db.Database.EnsureCreated();
-// }
+// Initialize database and seed data
+using (var scope = app.Services.CreateScope())
+{
+    var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
+    await seeder.SeedAsync();
+}
 
 app.Run();
+
+// Make the implicit Program class public for integration tests
+public partial class Program { }
