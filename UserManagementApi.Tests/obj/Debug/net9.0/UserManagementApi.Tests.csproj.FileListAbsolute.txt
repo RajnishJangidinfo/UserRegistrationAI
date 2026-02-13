@@ -462,3 +462,5 @@ C:\Users\rajni\UserRegistrationAI\UserManagementApi.Tests\obj\Debug\net9.0\refin
 C:\Users\rajni\UserRegistrationAI\UserManagementApi.Tests\obj\Debug\net9.0\UserManagementApi.Tests.pdb
 C:\Users\rajni\UserRegistrationAI\UserManagementApi.Tests\obj\Debug\net9.0\UserManagementApi.Tests.genruntimeconfig.cache
 C:\Users\rajni\UserRegistrationAI\UserManagementApi.Tests\obj\Debug\net9.0\ref\UserManagementApi.Tests.dll
+C:\Users\rajni\UserRegistrationAI\UserManagementApi.Tests\bin\Debug\net9.0\BouncyCastle.Crypto.dll
+C:\Users\rajni\UserRegistrationAI\UserManagementApi.Tests\bin\Debug\net9.0\Razorpay.dll

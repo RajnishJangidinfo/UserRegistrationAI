@@ -22,6 +22,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     )
 );
 
+// Configure Razorpay settings
+builder.Services.Configure<UserManagementApi.Models.RazorpaySettings>(
+    builder.Configuration.GetSection("Razorpay")
+);
+
+
 // Add CORS for Next.js frontend
 builder.Services.AddCors(options =>
 {
