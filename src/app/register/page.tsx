@@ -5,12 +5,14 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { User, Mail, Lock, CheckCircle2, AlertCircle, ArrowRight } from "lucide-react"
+import { User, Mail, Lock, CheckCircle2, AlertCircle, ArrowRight, ArrowLeft } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 import { registerUser } from "@/lib/api"
+import { useRouter } from "next/navigation"
 
 export default function RegisterPage() {
+    const router = useRouter()
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -102,6 +104,14 @@ export default function RegisterPage() {
             </div>
 
             <div className="glass max-w-md w-full p-8 rounded-2xl relative z-10 shadow-2xl ring-1 ring-white/10">
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => router.back()}
+                    className="mb-4 text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+                >
+                    <ArrowLeft className="mr-2 h-4 w-4" /> Back
+                </Button>
                 <div className="text-center mb-8">
                     <h1 className="text-4xl font-extrabold tracking-tight text-white mb-2 bg-clip-text text-transparent bg-gradient-to-r from-indigo-200 to-purple-200">
                         Join the Universe
